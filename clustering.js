@@ -14,6 +14,12 @@ if (cluster.isMaster) {
       console.log(`${worker.id}/${workersList.length}: ${message}`);
     });
   });
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died with code ${code} and signal ${signal}`);
+    console.log(`Starting a new one`);
+    cluster.fork();
+  });
 } else {
   http.Server((req, res) => {
     res.writeHead(200);
